@@ -24,7 +24,7 @@ type commandDefinition struct {
 	// commands points to the global command map; if this is null, then the global
 	// variable named "commands" is used instead.
 	commands *map[string]commandDefinition
-	// commandPath is the arguements needed to get to this command.
+	// commandPath is the arguments needed to get to this command.
 	commandPath string
 	// subcommands that can be spawned from this command.
 	subcommands map[string]struct{}
@@ -278,6 +278,13 @@ func init() {
 	registerArgHandler("compose", "-f", filePathArgHandler)
 	registerArgHandler("compose", "--project-directory", filePathArgHandler)
 	registerArgHandler("compose", "--env-file", filePathArgHandler)
+	subcommands := []string{"build", "config", "down", "kill", "logs", "ps", "pull", "push", "up"}
+	for _, sc := range subcommands {
+		// No `-f` option because they aren't in the help for any of the `docker compose X` subcommands.:w
+		registerArgHandler("compose " + sc, "--file", filePathArgHandler)
+		registerArgHandler("compose " + sc, "--project-directory", filePathArgHandler)
+		registerArgHandler("compose " + sc, "--env-file", filePathArgHandler)
+	}
 	registerArgHandler("container run", "--cosign-key", filePathArgHandler)
 	registerArgHandler("container run", "--volume", volumeArgHandler)
 	registerArgHandler("container run", "-v", volumeArgHandler)
